@@ -48,9 +48,27 @@ weatherButton.addEventListener('click', getWeather);
 
 // Function to fetch and display weather information
 async function getWeather() {
-    // Weatherbit requires an API key and location
-    // Using a free alternative: Open-Meteo (no key needed)
-    const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=40.7128&longitude=-74.0060&current=temperature_2m,weather_code');
+    // List of cities with their coordinates
+    const cities = [
+        { name: 'New York, USA', lat: 40.7128, lon: -74.0060 },
+        { name: 'London, UK', lat: 51.5074, lon: -0.1278 },
+        { name: 'Tokyo, Japan', lat: 35.6762, lon: 139.6503 },
+        { name: 'Paris, France', lat: 48.8566, lon: 2.3522 },
+        { name: 'Sydney, Australia', lat: -33.8688, lon: 151.2093 },
+        { name: 'Dubai, UAE', lat: 25.2048, lon: 55.2708 },
+        { name: 'Bangkok, Thailand', lat: 13.7563, lon: 100.5018 },
+        { name: 'Berlin, Germany', lat: 52.5200, lon: 13.4050 },
+        { name: 'Moscow, Russia', lat: 55.7558, lon: 37.6173 },
+        { name: 'Toronto, Canada', lat: 43.6532, lon: -79.3832 },
+        { name: 'Mexico City, Mexico', lat: 19.4326, lon: -99.1332 },
+        { name: 'Rio de Janeiro, Brazil', lat: -22.9068, lon: -43.1729 }
+    ];
+    
+    // Pick a random city
+    const randomCity = cities[Math.floor(Math.random() * cities.length)];
+    
+    // Using Open-Meteo API (no key needed)
+    const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${randomCity.lat}&longitude=${randomCity.lon}&current=temperature_2m,weather_code`);
     const data = await response.json();
     
     // Clear previous weather information
@@ -65,7 +83,7 @@ async function getWeather() {
     temp.textContent = `Temperature: ${tempC}°C / ${tempF.toFixed(1)}°F`;
     
     const location = document.createElement('p');
-    location.textContent = 'Location: Minneapolis, MN, USA';
+    location.textContent = `Location: ${randomCity.name}`;
 
     // Append the weather information to the container
     weatherContainer.appendChild(location);
@@ -80,6 +98,12 @@ currencyButton.addEventListener('click', getExchangeRates);
 
 // Function to fetch and display exchange rates
 async function getExchangeRates() {
+    // List of common currencies
+    const currencies = ['EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'CNY', 'INR', 'MXN', 'BRL', 'ZAR', 'KRW'];
+    
+    // Pick a random currency
+    const randomCurrency = currencies[Math.floor(Math.random() * currencies.length)];
+    
     // Using a free API: ExchangeRate-API (no key needed for basic usage)
     const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
     const data = await response.json();
@@ -87,12 +111,15 @@ async function getExchangeRates() {
     // Clear previous exchange rates
     currencyContainer.innerHTML = '';
 
+    // Get the exchange rate for the random currency
+    const rate = data.rates[randomCurrency];
+
     // Create elements to display exchange rates
-    const usdToEur = document.createElement('p');
-    usdToEur.textContent = `USD to EUR: ${data.rates.EUR}`;
+    const exchangeRate = document.createElement('p');
+    exchangeRate.textContent = `USD to ${randomCurrency}: ${rate.toFixed(2)}`;
 
     // Append the exchange rates to the container
-    currencyContainer.appendChild(usdToEur);
+    currencyContainer.appendChild(exchangeRate);
 }
 
 // MOVIES API
